@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class NotificationTicket extends Model {
+  class Notifiacationticket extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  NotificationTicket.init({
+  Notifiacationticket.init({
     subject: {
       type: DataTypes.STRING,
       allowNull: false
@@ -33,12 +33,12 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue:"PENDING"
     },
     notification: {
-      type: DataTypes.STRING,
+      type: DataTypes.DATE,
       allowNull: false
     },
   }, {
     sequelize,
-    modelName: 'NotificationTicket',
+    modelName: 'Notifiacationticket',
   });
-  return NotificationTicket;
+  return Notifiacationticket;
 };
