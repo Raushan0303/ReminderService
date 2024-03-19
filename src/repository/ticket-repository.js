@@ -24,7 +24,7 @@ class TicketRepository{
             const tickets = await Notifiacationticket.findAll({
                 where: {
                     status: filter.status,
-                    notificationTime: {
+                    notification: {
                         [Op.lte]: new Date()
                     }
                 }
@@ -34,6 +34,18 @@ class TicketRepository{
             throw error;
         }
     }
+    async update(ticketId, data) {
+        try {
+            const ticket = await Notifiacationticket.findByPk(ticketId);
+            if(data.status)
+                ticket.status = data.status;
+            await ticket.save();
+            return ticket;
+        } catch (error) {
+            throw error;
+        }
+    }
 }
+
 
 module.exports = TicketRepository;
