@@ -5,7 +5,8 @@ const bodyparser = require('body-parser')
 const jobs = require('./utils/job')
 const { subscribeMessage, createChannel } = require('./utils/messageQueue');
 const { REMINDER_BINDING_KEY } = require('./config/server-config');
-const TicketController = require('./controllers/ticket-controller')
+const TicketController = require('./controllers/ticket-controller');
+const EmailService = require('./services/email-service');
 
 const {PORT} = require('./config/server-config')
 const setUpServer = async()=>{

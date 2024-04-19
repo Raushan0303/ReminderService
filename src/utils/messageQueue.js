@@ -1,5 +1,6 @@
-const amqplib = require('amqplib/callback_api');
-const {MESSAGE_BROKER_URL,EXCHANGE_NAME} = require('../config/server-config')
+const amqplib = require('amqplib');
+const { MESSAGE_BROKER_URL, EXCHANGE_NAME} = require('../config/server-config');
+const {testingQueue} = require('../services/email-service')
 
 const createChannel = async () => {
     try {
@@ -12,39 +13,38 @@ const createChannel = async () => {
     }
 }
 
+const subscribeMessage = async (channel, service,  binding_key) => {
+    try {
+        const applicationQueue = await channel.assertQueue('REMINDER_QUEUE_NAME');
 
-const subscribeMessage = async(channel,service, binding_key) => {
-    try {
-        const applicationQueue = await channel.assrtQueue('QUEUE_NAME');
-        
-        channel.binding_key(applicationQueue.queue, EXCHANGE_NAME,binding_key);
-        channel.consume(applicationQueue.queue,msg=>{
-            console.log('recieved data');
+        channel.bindQueue(applicationQueue.queue, EXCHANGE_NAME, binding_key);
+
+        channel.consume(applicationQueue.queue, msg => {
+            console.log('received data');
             console.log(msg.content.toString());
+            const payload = JSON.parse(msg.content.toString());
+            // if(payload.service=='DEMO_SERVICE')
+               service(payload);
+            
             channel.ack(msg);
-        })
+        });
     } catch (error) {
-        
+        throw error;
     }
+    
 }
-const publishMessage = async(channel,binding_key,message)=>{
+
+const publishMessage = async (channel, binding_key, message) => {
     try {
-        await channel.publish(EXCHANGE_NAME,binding_key,Buffer.from(message));
+        await channel.assertQueue('QUEUE_NAME');
+        await channel.publish(EXCHANGE_NAME, binding_key, Buffer.from(message));
     } catch (error) {
         throw error;
     }
 }
-
 
 module.exports = {
     subscribeMessage,
     createChannel,
     publishMessage
 }
-
-/**
- * for creating a channel first we need to setup connection with queue
- * once the connection is setup we create the channel by line no 6
- * now what is assertExchange?
- * 
- */
